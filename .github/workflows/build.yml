@@ -116,12 +116,6 @@ jobs:
             --platform ${PLATFORM_3} .
           docker push ${{ steps.vars.outputs.repo }}:${{ steps.vars.outputs.branch }}-${PLATFORM_3}
 
-      - name: Publish images
-        run: |
-          docker push ${{ steps.vars.outputs.repo }}:${{ steps.vars.outputs.branch }}-${PLATFORM_1}
-          docker push ${{ steps.vars.outputs.repo }}:${{ steps.vars.outputs.branch }}-${PLATFORM_2}
-          docker push ${{ steps.vars.outputs.repo }}:${{ steps.vars.outputs.branch }}-${PLATFORM_3}
-
       - name: Create :latest manifest
         if: github.ref == 'refs/heads/master'
         run: |
@@ -141,12 +135,8 @@ jobs:
 
       - name: Create tag
         if: github.ref == 'refs/heads/master'
-        run: |
-          curl -s -X POST https://api.github.com/repos/${{ steps.vars.outputs.repo }}/git/refs \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -d @- << EOF
-            {
-              "ref": "refs/tags/${{ steps.vars.outputs.branch }}",
-              "sha": "${{ github.sha }}"
-            }
-            EOF
+        uses: anothrNick/github-tag-action@1.17.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          CUSTOM_TAG: ${{ steps.vars.outputs.repo }}
