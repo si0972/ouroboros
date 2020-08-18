@@ -59,11 +59,18 @@ jobs:
           #echo "::set-output name=repo::$(echo ${_repo} | tr '[:upper:]' '[:lower:]')"
           echo "::set-output name=repo::si0972/ouroboros"
           echo "::set-output name=username::$(echo ${_repo} | cut -d/ -f1 | tr '[:upper:]' '[:lower:]')"
-          if [[ ${_ref} == 'refs/heads/master' ]]; then
-            echo "::set-output name=branch::$(grep -i version pyouroboros/__init__.py | cut -d \  -f3 | tr -d \")"
-          else
-            echo "::set-output name=branch::$(echo ${_ref} | cut -d/ -f3,4 | sed 's!/!-!' | tr '[:upper:]' '[:lower:]')"
-          fi
+          echo "::set-output name=branch::$(echo ${_ref} | cut -d/ -f3,4 | sed 's!/!-!' | tr '[:upper:]' '[:lower:]')"
+
+      - name: Create tag
+        if: github.ref == 'refs/heads/master'
+        id: CreateTag
+        uses: anothrNick/github-tag-action@1.17.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+
+      - name: Set tag
+        run: echo "::set-output name=branch::${{ steps.CreateTag.outputs.new_tag }}""
 
       - name: Print VARS
         if: "contains(toJSON(github.event.commits.*.msg), '[debug]')"
@@ -132,11 +139,3 @@ jobs:
             ${{ steps.vars.outputs.repo }}:${{ steps.vars.outputs.branch }}-${PLATFORM_2} \
             ${{ steps.vars.outputs.repo }}:${{ steps.vars.outputs.branch }}-${PLATFORM_3}
           docker manifest push ${{ steps.vars.outputs.repo }}:${{ steps.vars.outputs.branch }}
-
-      - name: Create tag
-        if: github.ref == 'refs/heads/master'
-        uses: anothrNick/github-tag-action@1.17.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true
-          CUSTOM_TAG: ${{ steps.vars.outputs.branch }}
