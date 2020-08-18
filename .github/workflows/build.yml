@@ -144,10 +144,4 @@ jobs:
         run: |
           curl -s -X POST https://api.github.com/repos/${{ steps.vars.outputs.repo }}/git/refs \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -d @- << EOF
-
-            {
-              "ref": "refs/tags/${{ steps.vars.outputs.branch }}",
-              "sha": "${{ github.sha }}"
-            }
-            EOF
+            -d @- << EOF { "ref": "refs/tags/${{ steps.vars.outputs.branch }}", "sha": "${{ github.sha }}" } EOF
