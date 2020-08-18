@@ -75,7 +75,6 @@ jobs:
       - name: Set up buildkit
         run: |
           docker run --privileged linuxkit/binfmt:v0.8
-          docker cp buildkit:/usr/bin/buildctl /usr/bin/
 
       - name: Login to registry
         if: github.event_name != 'pull_request' && contains(github.ref, 'actions') != 'true'
