@@ -82,11 +82,9 @@ jobs:
           add: pyouroboros/__init__.py
           author_name: GHActions
           message: Bump Version
+          tag: ${{ steps.CreateTag.outputs.new_tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: ReCheckout
-        uses: actions/checkout@v2
 
       - name: Print VARS
         if: "contains(toJSON(github.event.commits.*.msg), '[debug]')"
@@ -150,10 +148,3 @@ jobs:
       #       ${{ steps.vars.outputs.repo }}:${{ steps.vars.outputs.branch }}-${PLATFORM_2} \
       #       ${{ steps.vars.outputs.repo }}:${{ steps.vars.outputs.branch }}-${PLATFORM_3}
       #     docker manifest push ${{ steps.vars.outputs.repo }}:${{ steps.vars.outputs.branch }}
-
-      - name: Create tag
-        if: github.ref == 'refs/heads/master'
-        uses: anothrNick/github-tag-action@1.17.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CUSTOM_TAG: ${{ steps.CreateTag.outputs.new_tag }}
