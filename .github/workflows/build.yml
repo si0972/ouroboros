@@ -38,7 +38,7 @@ jobs:
 
   build-and-push-container:
     needs: test
-    #if: ${{ github.event_name == 'push' && ! contains(toJSON(github.event.commits.*.message), '[ci skip]') }}
+    if: ${{ github.event_name == 'push' && ! contains(toJSON(github.event.commits.*.message), '[ci skip]') }}
     runs-on: ubuntu-20.04
 
     env:
