@@ -64,16 +64,15 @@ jobs:
       - name: Bump tag
         if: github.ref == 'refs/heads/master'
         id: CreateTag
-        uses: anothrNick/github-tag-action@1.17.2
-        env:
-          DEFAULT_BUMP: patch
-          DRY_RUN: true
+        uses: Benbentwo/increment-semver@master
+        with:
+          version-level: "-p"
 
       - name: Set tag
         if: github.ref == 'refs/heads/master'
         run: |
-          echo "::set-output name=branch::${{ steps.CreateTag.outputs.new_tag }}"
-          sed -i "s/$(grep -i version pyouroboros/__init__.py | cut -d \  -f3 | tr -d \")/${{ steps.CreateTag.outputs.new_tag }}/g" pyouroboros/__init__.py
+          echo "::set-output name=branch::${{ steps.CreateTag.outputs.version }}"
+          sed -i "s/$(grep -i version pyouroboros/__init__.py | cut -d \  -f3 | tr -d \")/${{ steps.CreateTag.outputs.version }}/g" pyouroboros/__init__.py
 
       - name: Push changed files
         if: github.ref == 'refs/heads/master'
@@ -82,7 +81,7 @@ jobs:
           add: pyouroboros/__init__.py
           author_name: GHActions
           message: Bump Version
-          tag: ${{ steps.CreateTag.outputs.new_tag }}
+          tag: ${{ steps.CreateTag.outputs.version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
