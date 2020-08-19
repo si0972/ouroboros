@@ -60,17 +60,18 @@ jobs:
           echo "::set-output name=username::$(echo ${_repo} | cut -d/ -f1 | tr '[:upper:]' '[:lower:]')"
           echo "::set-output name=branch::$(echo ${_ref} | cut -d/ -f3,4 | sed 's!/!-!' | tr '[:upper:]' '[:lower:]')"
           echo "::set-output name=old_tag::$(grep -i version pyouroboros/__init__.py | cut -d \  -f3 | tr -d \")"
-          if [ $GITHUB_REF == 'refs/heads/master' ]; then
+          if git diff-tree --no-commit-id --name-only --quiet -r $GITHUB_SHA -- . ':requirements.txt'; then
             version=$(grep -i version pyouroboros/__init__.py | cut -d \  -f3 | tr -d \")
             a=(${version//./ })
             ((a[2]++))
             version=$(echo "${a[0]}.${a[1]}.${a[2]}")
             echo ${version}
             echo "::set-output name=branch::${version}"
+            echo "::set-output name=tag::true"
           fi
 
       - name: Set tag
-        if: github.ref == 'refs/heads/master'
+        if: steps.vars.outputs.branch == 'true'
         shell: bash
         run: |
           sed -i "s/${{ steps.vars.outputs.old_tag }}/${{ steps.vars.outputs.branch }}/g" pyouroboros/__init__.py
