@@ -68,6 +68,7 @@ jobs:
         env:
           DEFAULT_BUMP: patch
           DRY_RUN: true
+          WITH_V: true
 
       - name: Set tag
         if: github.ref == 'refs/heads/master'
