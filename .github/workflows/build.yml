@@ -71,7 +71,7 @@ jobs:
           version=$(echo "${a[0]}.${a[1]}.${a[2]}")
           echo $version
           echo "::set-output name=branch::$version"
-          sed -i "s/${{ steps.vars.outputs.old_tag }}/${{ steps.vars.outputs.branch }}/g" pyouroboros/__init__.py
+          sed -i "s/${{ steps.vars.outputs.old_tag }}/$version/g" pyouroboros/__init__.py
 
       - name: Push changed files
         if: github.ref == 'refs/heads/master'
