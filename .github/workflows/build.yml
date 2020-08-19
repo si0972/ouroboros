@@ -68,7 +68,7 @@ jobs:
           a=(${version//./ })
           ((a[2]++))
           echo "::set-output name=branch::$(echo "${a[0]}.${a[1]}.${a[2]}")"
-          sed -i "s/${{ steps.vars.outputs.old_tag }}/${{ steps.CreateTag.outputs.version }}/g" pyouroboros/__init__.py
+          sed -i "s/${{ steps.vars.outputs.old_tag }}/${{ steps.vars.outputs.branch }}/g" pyouroboros/__init__.py
 
       - name: Push changed files
         if: github.ref == 'refs/heads/master'
@@ -77,7 +77,7 @@ jobs:
           add: pyouroboros/__init__.py
           author_name: GHActions
           message: Bump Version
-          tag: ${{ steps.CreateTag.outputs.version }}
+          tag: ${{ steps.vars.outputs.branch }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
