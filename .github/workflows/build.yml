@@ -71,7 +71,7 @@ jobs:
           fi
 
       - name: Set tag
-        if: steps.vars.outputs.branch == 'true'
+        if: steps.vars.outputs.tag == 'true'
         shell: bash
         run: |
           sed -i "s/${{ steps.vars.outputs.old_tag }}/${{ steps.vars.outputs.branch }}/g" pyouroboros/__init__.py
