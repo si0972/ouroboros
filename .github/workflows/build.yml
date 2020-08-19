@@ -65,8 +65,8 @@ jobs:
             a=(${version//./ })
             ((a[2]++))
             version=$(echo "${a[0]}.${a[1]}.${a[2]}")
-            echo ${ version }
-            echo "::set-output name=branch::${ version }"
+            echo ${version}
+            echo "::set-output name=branch::${version}"
           fi
 
       - name: Set tag
