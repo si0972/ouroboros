@@ -86,7 +86,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: ReCheckout
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
 
       - name: Create tag
         if: github.ref == 'refs/heads/master'
