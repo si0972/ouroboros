@@ -75,6 +75,19 @@ jobs:
           echo "::set-output name=branch::${{ steps.CreateTag.outputs.new_tag }}"
           sed -i "s/$(grep -i version pyouroboros/__init__.py | cut -d \  -f3 | tr -d \")/${{ steps.CreateTag.outputs.new_tag }}/g" pyouroboros/__init__.py
 
+      - name: Push changed files
+        if: github.ref == 'refs/heads/master'
+        uses: EndBug/add-and-commit@v4
+        with:
+          add: pyouroboros/__init__.py
+          author_name: GHActions
+          message: Bump Version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: ReCheckout
+      - uses: actions/checkout@v2
+
       - name: Create tag
         if: github.ref == 'refs/heads/master'
         uses: anothrNick/github-tag-action@1.17.2
